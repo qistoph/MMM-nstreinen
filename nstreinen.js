@@ -11,6 +11,7 @@ Module.register('nstreinen', {
 		},
 		fade: true,
 		fadePoint: 0.25,
+		animationSpeed: 4000,
 	},
 
 	init: function() {
@@ -40,7 +41,9 @@ Module.register('nstreinen', {
 	socketNotificationReceived: function (notification, payload) {
 		Log.info('Received: ' + notification + ', ' + payload);
 		if (notification === 'STATION_EVENTS') {
+			console.log(payload);
 			if (this.hasStation(payload.station)) {
+				console.log('Station matches');
 				this.trains[payload.station] = payload.trains;
 				this.loaded = true;
 			}
@@ -52,7 +55,8 @@ Module.register('nstreinen', {
 			Log.log('Calendar received an unknown socket notification: ' + notification);
 		}
 
-		this.updateDom(this.config.animationSpeed);
+		this.updateDom();
+		this.show();
 	},
 
 	getDom: function() {
@@ -98,6 +102,7 @@ Module.register('nstreinen', {
 
 			var trackWrapper = document.createElement('td');
 			trackWrapper.innerHTML = train.track;
+			trackWrapper.className = 'track';
 			if (train.trackChanged) {
 				trackWrapper.className = 'bright';
 			}
