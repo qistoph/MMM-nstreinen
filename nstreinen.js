@@ -51,7 +51,7 @@ Module.register('nstreinen', {
 
 		if (trains.length === 0) {
 			Log.error('No trains... loaded: ' + this.loaded);
-			wrapper.innerHTML = (this.loaded) ? "Geen informatie" : "Loading...";
+			wrapper.innerHTML = (this.loaded) ? "No information" : "Loading...";
 			wrapper.className = 'small dimmed';
 			return wrapper;
 		}
