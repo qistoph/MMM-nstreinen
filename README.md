@@ -75,10 +75,30 @@ The following properties can be configured:
 			<br><b>Default value:</b> <code>true</code></td>
 		</tr>
 		<tr>
-			<td><code>symbol</code></td>
-			<td>The symbol to show.<br>
-			<br><b>Possible values:</b> See <a href="http://fontawesome.io/icons/" target="_blank">Font Awsome</a> website.
-			<br><b>Default value:</b> <code>train</code>
+			<td><code>symbolMapping</code></td>
+			<td>Maps the train types to the symbol to show.<br>
+			<br>If the train type is not found, the symbol for <code>default</code> is used.
+			<br><b>Possible symbols:</b> See <a href="http://fontawesome.io/icons/" target="_blank">Font Awsome</a> website.
+			<br><b>Default value:</b><br><pre><code>symbolMapping: {
+	'Intercity': 'train',
+	'Intercity direct': 'forward',
+	'Sprinter': 'stop-circle',
+	'default': 'train'
+}</pre></code>
+			</td>
+		</tr>
+		<tr>
+			<td><code>fade</code></td>
+			<td>Fade the trains listed to black. (Gradient)<br>
+				<br><b>Possible values:</b> <code>true</code> or <code>false</code>
+				<br><b>Default value:</b> <code>true</code>
+			</td>
+		</tr>
+		<tr>
+			<td><code>fadePoint</code></td>
+			<td>Where to start fade?<br>
+				<br><b>Possible values:</b> <code>0</code> (top of the list) - <code>1</code> (bottom of list)
+				<br><b>Default value:</b> <code>0.25</code>
 			</td>
 		</tr>
 	</tbody>

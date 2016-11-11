@@ -3,7 +3,14 @@ Module.register('nstreinen', {
 		maxEntries: 5,
 		reloadInterval: 5 * 60 * 1000,
 		displaySymbol: true,
-		symbol: 'train', // Fontawesome Symbol see http://fontawesome.io/cheatsheet/
+		symbolMapping: {
+			'Intercity': 'train',
+			'Intercity direct': 'forward',
+			'Sprinter': 'stop-circle',
+			'default': 'train'
+		},
+		fade: true,
+		fadePoint: 0.25,
 	},
 
 	init: function() {
@@ -54,7 +61,6 @@ Module.register('nstreinen', {
 		wrapper.className = 'small';
 
 		if (trains.length === 0) {
-			Log.error('No trains... loaded: ' + this.loaded);
 			wrapper.innerHTML = (this.loaded) ? 'No information' : 'Loading...';
 			wrapper.className = 'small dimmed';
 			return wrapper;
@@ -69,7 +75,10 @@ Module.register('nstreinen', {
 				var symbolWrapper = document.createElement('td');
 				symbolWrapper.className = 'symbol';
 				var symbol = document.createElement('span');
-				symbol.className = 'fa fa-'+this.config.symbol;
+
+				var symbolName = train.trainKind in this.config.symbolMapping ? this.config.symbolMapping[train.trainKind] : this.config.symbolMapping['default'];
+
+				symbol.className = 'fa fa-'+symbolName;
 				symbolWrapper.appendChild(symbol);
 				trainWrapper.appendChild(symbolWrapper);
 			}
@@ -99,6 +108,19 @@ Module.register('nstreinen', {
 
 			trainWrapper.appendChild(trackWrapper);
 			wrapper.appendChild(trainWrapper);
+
+			// Create fade effect.
+			if (this.config.fade && this.config.fadePoint < 1) {
+				if (this.config.fadePoint < 0) {
+					this.config.fadePoint = 0;
+				}
+				var startingPoint = trains.length * this.config.fadePoint;
+				var steps = trains.length - startingPoint;
+				if (t >= startingPoint) {
+					var currentStep = t - startingPoint;
+					trainWrapper.style.opacity = 1 - (1 / steps * currentStep);
+				}
+			}
 		}
 
 		return wrapper;
