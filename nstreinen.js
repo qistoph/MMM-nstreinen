@@ -12,7 +12,7 @@ Module.register('nstreinen', {
 	},
 
 	start: function() {
-		Log.info("Starting module: " + this.name);
+		Log.info('Starting module: ' + this.name);
 		var self = this;
 		setInterval(function() {
 			self.updateDom();
@@ -21,24 +21,28 @@ Module.register('nstreinen', {
 		this.addStation(this.config.station, this.config.user, this.config.pass, this.config.reloadInterval);
 	},
 
+	getStyles: function() {
+		return ['nstreinen.css'];
+	},
+
 	getScripts: function() {
-		return ["moment.js"];
+		return ['moment.js'];
 	},
 
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
 		Log.info('Received: ' + notification + ', ' + payload);
-		if (notification === "STATION_EVENTS") {
+		if (notification === 'STATION_EVENTS') {
 			if (this.hasStation(payload.station)) {
 				this.trains[payload.station] = payload.trains;
 				this.loaded = true;
 			}
-		} else if (notification === "FETCH_ERROR") {
-			Log.error("Calendar Error. Could not fetch calendar: " + payload.url);
-		} else if (notification === "INCORRECT_URL") {
-			Log.error("Calendar Error. Incorrect url: " + payload.url);
+		} else if (notification === 'FETCH_ERROR') {
+			Log.error('Calendar Error. Could not fetch calendar: ' + payload.url);
+		} else if (notification === 'INCORRECT_URL') {
+			Log.error('Calendar Error. Incorrect url: ' + payload.url);
 		} else {
-			Log.log("Calendar received an unknown socket notification: " + notification);
+			Log.log('Calendar received an unknown socket notification: ' + notification);
 		}
 
 		this.updateDom(this.config.animationSpeed);
@@ -51,7 +55,7 @@ Module.register('nstreinen', {
 
 		if (trains.length === 0) {
 			Log.error('No trains... loaded: ' + this.loaded);
-			wrapper.innerHTML = (this.loaded) ? "No information" : "Loading...";
+			wrapper.innerHTML = (this.loaded) ? 'No information' : 'Loading...';
 			wrapper.className = 'small dimmed';
 			return wrapper;
 		}
@@ -72,6 +76,7 @@ Module.register('nstreinen', {
 
 			var titleWrapper = document.createElement('td');
 			titleWrapper.innerHTML = train.destination;
+			titleWrapper.className = 'title';
 			trainWrapper.appendChild(titleWrapper);
 
 			var timeWrapper = document.createElement('td');
@@ -79,13 +84,13 @@ Module.register('nstreinen', {
 			if (train.departureDelay != 0) {
 				timeWrapper.innerHTML += '+' + train.departureDelay;
 			}
-			timeWrapper.className = 'title bright';
+			timeWrapper.className = 'bright align-left';
 			trainWrapper.appendChild(timeWrapper);
 
 			var trackWrapper = document.createElement('td');
 			trackWrapper.innerHTML = train.track;
 			if (train.trackChanged) {
-				trackWrapper.className = 'title bright';
+				trackWrapper.className = 'bright';
 			}
 
 			if (train.cancelled) {
