@@ -2,7 +2,7 @@
 
 Shows information on trains departuring a configurable Dutch trainstation.
 
-![Example Visualization](https://github.com/qistoph/nstreinen/blob/master/.previews/preview_strength_fullscreen.png)
+![Example Visualization](.previews/nstreinen.png)
 
 ## Installing the module
 

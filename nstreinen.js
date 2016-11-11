@@ -11,7 +11,6 @@ Module.register('nstreinen', {
 		},
 		fade: true,
 		fadePoint: 0.25,
-		animationSpeed: 4000,
 	},
 
 	init: function() {
