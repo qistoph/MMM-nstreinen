@@ -1,6 +1,6 @@
 # NS Trains - MagicMirror² module
 
-Shows information on trains departuring a configurable Dutch trainstation.
+This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror). Shows informantion on trains departuring a configurable Dutch trainstation.
 
 ![Example Visualization](.previews/nstreinen.png)
 

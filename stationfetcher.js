@@ -48,7 +48,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 					trainKind: vt.TreinSoort[0],
 					track: vt.VertrekSpoor[0]['_'],
 					trackChanged: vt.VertrekSpoor[0]['$']['wijziging'] == 'true',
-					cancelled: parseNote(vt.Opmerkingen),
+					cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] == 'Stopbus i.p.v. trein' || vt.TreinSoort[0] == 'Snelbus i.p.v. trein',
 				});
 			});
 
@@ -91,7 +91,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			return true;
 		}
 
-		Log.info('Unknown note: ' + note);
+		Log.warn('Unknown note: ' + note);
 
 		return false;
 	}
