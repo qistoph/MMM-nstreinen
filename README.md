@@ -83,6 +83,8 @@ The following properties can be configured:
 	'Intercity': 'train',
 	'Intercity direct': 'forward',
 	'Sprinter': 'stop-circle',
+	'Stopbus i.p.v. trein': 'bus',
+	'Snelbus i.p.v. trein': 'bus',
 	'default': 'train'
 }</pre></code>
 			</td>
