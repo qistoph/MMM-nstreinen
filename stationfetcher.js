@@ -9,6 +9,20 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	var fetchFailedCallback = function() {};
 	var trainsReceivedCallback = function() {};
 
+	var opts = {
+		mimetypes: {
+			'xml': ['application/xml', 'application/xml;charset=utf-8', 'text/xml']
+		}
+	};
+
+	if (user && pass) {
+		opts.user = user;
+		opts.password = pass;
+	}
+
+	var apiClient = new Client(opts);
+	apiClient.registerMethod('actueleVertrektijden', url, 'GET');
+
 	/* fetchStation()
 	 * Initiates station fetch.
 	 */
@@ -16,47 +30,40 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		clearTimeout(reloadTimer);
 		reloadTimer = null;
 
-		var opts = {
-			mimetypes: {
-				'xml': ['application/xml', 'application/xml;charset=utf-8', 'text/xml']
-			}
-		};
+		apiClient.methods.actueleVertrektijden({'path': {'station': station}}, handleApiResponse);
+	};
 
-		if (user && pass) {
-			opts.user = user;
-			opts.password = pass;
+	var handleApiResponse = function(data, response) {
+		newTrains = [];
+
+		if (data === undefined || data.ActueleVertrekTijden === undefined || data.ActueleVertrekTijden.VertrekkendeTrein === undefined) {
+			fetchFailedCallback(self, 'Received data empty or invalid.');
+			return;
 		}
 
-		var client = new Client(opts);
-		client.registerMethod('actueleVertrektijden', url, 'GET');
-
-		client.methods.actueleVertrektijden({'path': {'station': station}}, function(data, response) {
-			newTrains = [];
-
-			data.ActueleVertrekTijden.VertrekkendeTrein.forEach(function(vt) {
-				//{ RitNummer: [ '14839' ],
-				//  VertrekTijd: [ '2016-11-11T11:10:00+0100' ],
-				//  EindBestemming: [ 'Hoorn' ],
-				//  TreinSoort: [ 'Sprinter' ],
-				//  RouteTekst: [ 'Uitgeest, Alkmaar' ],
-				//  Vervoerder: [ 'NS' ],
-				//  VertrekSpoor: [ { _: '5', '$': [Object] } ] }
-				newTrains.push({
-					departureTime: vt.VertrekTijd[0],
-					departureDelay: parseDelay(vt.VertrekVertraging),
-					destination: vt.EindBestemming[0],
-					trainKind: vt.TreinSoort[0],
-					track: vt.VertrekSpoor[0]['_'],
-					trackChanged: vt.VertrekSpoor[0]['$']['wijziging'] == 'true',
-					cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] == 'Stopbus i.p.v. trein' || vt.TreinSoort[0] == 'Snelbus i.p.v. trein',
-				});
+		data.ActueleVertrekTijden.VertrekkendeTrein.forEach(function(vt) {
+			//{ RitNummer: [ '14839' ],
+			//  VertrekTijd: [ '2016-11-11T11:10:00+0100' ],
+			//  EindBestemming: [ 'Hoorn' ],
+			//  TreinSoort: [ 'Sprinter' ],
+			//  RouteTekst: [ 'Uitgeest, Alkmaar' ],
+			//  Vervoerder: [ 'NS' ],
+			//  VertrekSpoor: [ { _: '5', '$': [Object] } ] }
+			newTrains.push({
+				departureTime: vt.VertrekTijd[0],
+				departureDelay: parseDelay(vt.VertrekVertraging),
+				destination: vt.EindBestemming[0],
+				trainKind: vt.TreinSoort[0],
+				track: vt.VertrekSpoor[0]['_'],
+				trackChanged: vt.VertrekSpoor[0]['$']['wijziging'] == 'true',
+				cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] == 'Stopbus i.p.v. trein' || vt.TreinSoort[0] == 'Snelbus i.p.v. trein',
 			});
-
-			trains = newTrains;
-			self.broadcastTrains();
-			scheduleTimer();
 		});
-	};
+
+		trains = newTrains;
+		self.broadcastTrains();
+		scheduleTimer();
+	}
 
 	var parseDelay = function(delay) {
 		if (delay === undefined) {
