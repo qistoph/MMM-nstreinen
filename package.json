@@ -10,5 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "node-rest-client": "^2.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qistoph/MMM-nstreinen"
   }
 }
