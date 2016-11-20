@@ -47,11 +47,11 @@ Module.register('nstreinen', {
 				this.loaded = true;
 			}
 		} else if (notification === 'FETCH_ERROR') {
-			Log.error('Calendar Error. Could not fetch calendar: ' + payload.url);
+			Log.error('NSTreinen Error. Could not fetch api: ' + payload.url);
 		} else if (notification === 'INCORRECT_URL') {
-			Log.error('Calendar Error. Incorrect url: ' + payload.url);
+			Log.error('NSTreinen Error. Incorrect url: ' + payload.url);
 		} else {
-			Log.log('Calendar received an unknown socket notification: ' + notification);
+			Log.log('NSTreinen received an unknown socket notification: ' + notification);
 		}
 
 		this.updateDom();
