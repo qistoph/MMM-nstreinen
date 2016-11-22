@@ -1,4 +1,4 @@
-var Client = require('node-rest-client').Client;
+var Client = require("node-rest-client").Client;
 
 var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	var self = this;
@@ -11,7 +11,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 
 	var opts = {
 		mimetypes: {
-			'xml': ['application/xml', 'application/xml;charset=utf-8', 'text/xml']
+			"xml": ["application/xml", "application/xml;charset=utf-8", "text/xml"]
 		}
 	};
 
@@ -21,7 +21,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	}
 
 	var apiClient = new Client(opts);
-	apiClient.registerMethod('actueleVertrektijden', url, 'GET');
+	apiClient.registerMethod("actueleVertrektijden", url, "GET");
 
 	/* fetchStation()
 	 * Initiates station fetch.
@@ -30,8 +30,8 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		clearTimeout(reloadTimer);
 		reloadTimer = null;
 
-		apiClient.methods.actueleVertrektijden({'path': {'station': station}}, handleApiResponse).on('error', function(err) {
-			fetchFailedCallback(self, 'Error fetching station: ' + err);
+		apiClient.methods.actueleVertrektijden({"path": {"station": station}}, handleApiResponse).on("error", function(err) {
+			fetchFailedCallback(self, "Error fetching station: " + err);
 			console.log(err.stack);
 		});
 	};
@@ -40,26 +40,26 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		newTrains = [];
 
 		if (data === undefined || data.ActueleVertrekTijden === undefined || data.ActueleVertrekTijden.VertrekkendeTrein === undefined) {
-			fetchFailedCallback(self, 'Received data empty or invalid.');
+			fetchFailedCallback(self, "Received data empty or invalid.");
 			return;
 		}
 
 		data.ActueleVertrekTijden.VertrekkendeTrein.forEach(function(vt) {
-			//{ RitNummer: [ '14839' ],
-			//  VertrekTijd: [ '2016-11-11T11:10:00+0100' ],
-			//  EindBestemming: [ 'Hoorn' ],
-			//  TreinSoort: [ 'Sprinter' ],
-			//  RouteTekst: [ 'Uitgeest, Alkmaar' ],
-			//  Vervoerder: [ 'NS' ],
-			//  VertrekSpoor: [ { _: '5', '$': [Object] } ] }
+			//{ RitNummer: [ "14839" ],
+			//  VertrekTijd: [ "2016-11-11T11:10:00+0100" ],
+			//  EindBestemming: [ "Hoorn" ],
+			//  TreinSoort: [ "Sprinter" ],
+			//  RouteTekst: [ "Uitgeest, Alkmaar" ],
+			//  Vervoerder: [ "NS" ],
+			//  VertrekSpoor: [ { _: "5", "$": [Object] } ] }
 			newTrains.push({
 				departureTime: vt.VertrekTijd[0],
 				departureDelay: parseDelay(vt.VertrekVertraging),
 				destination: vt.EindBestemming[0],
 				trainKind: vt.TreinSoort[0],
-				track: vt.VertrekSpoor[0]['_'],
-				trackChanged: vt.VertrekSpoor[0]['$']['wijziging'] == 'true',
-				cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] == 'Stopbus i.p.v. trein' || vt.TreinSoort[0] == 'Snelbus i.p.v. trein',
+				track: vt.VertrekSpoor[0]["_"],
+				trackChanged: vt.VertrekSpoor[0]["$"]["wijziging"] == "true",
+				cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] == "Stopbus i.p.v. trein" || vt.TreinSoort[0] == "Snelbus i.p.v. trein",
 			});
 		});
 
@@ -83,7 +83,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			return 1*(m[1]);
 		}
 
-		Log.error('Unknown delay time: ' + delay);
+		Log.error("Unknown delay time: " + delay);
 		return 0;
 	}
 
@@ -101,7 +101,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			return true;
 		}
 
-		Log.warn('Unknown note: ' + note);
+		Log.warn("Unknown note: " + note);
 
 		return false;
 	}
@@ -110,7 +110,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	 * Schedule the timer for the next update.
 	 */
 	var scheduleTimer = function() {
-		//console.log('Schedule update timer.');
+		//console.log("Schedule update timer.");
 		clearTimeout(reloadTimer);
 		reloadTimer = setTimeout(function() {
 			fetchStation();

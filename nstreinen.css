@@ -1,21 +1,21 @@
 .nstreinen .symbol {
-	padding-left: 0;
-	padding-right: 10px;
-	font-size: 80%;
+  padding-left: 0;
+  padding-right: 10px;
+  font-size: 80%;
 }
 
 .nstreinen .symbol span {
-	display: inline-block;
-	-ms-transform: translate(0, 2px); /* IE 9 */
-	-webkit-transform: translate(0, 2px); /* Safari */
-	transform: translate(0, 2px);
+  display: inline-block;
+  -ms-transform: translate(0, 2px); /* IE 9 */
+  -webkit-transform: translate(0, 2px); /* Safari */
+  transform: translate(0, 2px);
 }
 
 .nstreinen .title {
-	padding-left: 0;
-	padding-right: 10px;
+  padding-left: 0;
+  padding-right: 10px;
 }
 
 .nstreinen .track {
-	padding-left: 10px;
+  padding-left: 10px;
 }

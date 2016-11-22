@@ -1,27 +1,27 @@
-Module.register('nstreinen', {
+Module.register("nstreinen", {
 	defaults: {
 		maxEntries: 5,
 		reloadInterval: 5 * 60 * 1000,
 		displaySymbol: true,
 		symbolMapping: {
-			'Intercity': 'train',
-			'Intercity direct': 'forward',
-			'Sprinter': 'stop-circle',
-			'Stopbus i.p.v. trein': 'bus',
-			'Snelbus i.p.v. trein': 'bus',
-			'default': 'train'
+			"Intercity": "train",
+			"Intercity direct": "forward",
+			"Sprinter": "stop-circle",
+			"Stopbus i.p.v. trein": "bus",
+			"Snelbus i.p.v. trein": "bus",
+			"default": "train"
 		},
 		fade: true,
 		fadePoint: 0.25,
 	},
 
 	init: function() {
-		this.apiUrl = 'http://webservices.ns.nl/ns-api-avt?station=${station}';
+		this.apiUrl = "http://webservices.ns.nl/ns-api-avt?station=${station}";
 		this.trains = {};
 	},
 
 	start: function() {
-		Log.info('Starting module: ' + this.name);
+		Log.info("Starting module: " + this.name);
 		var self = this;
 		setInterval(function() {
 			self.updateDom();
@@ -31,27 +31,27 @@ Module.register('nstreinen', {
 	},
 
 	getStyles: function() {
-		return ['nstreinen.css'];
+		return ["nstreinen.css"];
 	},
 
 	getScripts: function() {
-		return ['moment.js'];
+		return ["moment.js"];
 	},
 
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
-		Log.info('Received: ' + notification, payload);
-		if (notification === 'STATION_EVENTS') {
+		Log.info("Received: " + notification, payload);
+		if (notification === "STATION_EVENTS") {
 			if (this.hasStation(payload.station)) {
 				this.trains[payload.station] = payload.trains;
 				this.loaded = true;
 			}
-		} else if (notification === 'FETCH_ERROR') {
-			Log.error('NSTreinen Error. Could not fetch api: ' + payload.url);
-		} else if (notification === 'INCORRECT_URL') {
-			Log.error('NSTreinen Error. Incorrect url: ' + payload.url);
+		} else if (notification === "FETCH_ERROR") {
+			Log.error("NSTreinen Error. Could not fetch api: " + payload.url);
+		} else if (notification === "INCORRECT_URL") {
+			Log.error("NSTreinen Error. Incorrect url: " + payload.url);
 		} else {
-			Log.log('NSTreinen received an unknown socket notification: ' + notification);
+			Log.log("NSTreinen received an unknown socket notification: " + notification);
 		}
 
 		this.updateDom();
@@ -60,54 +60,54 @@ Module.register('nstreinen', {
 
 	getDom: function() {
 		var trains = this.createTrainsList();
-		var wrapper = document.createElement('table');
-		wrapper.className = 'small';
+		var wrapper = document.createElement("table");
+		wrapper.className = "small";
 
 		if (trains.length === 0) {
-			wrapper.innerHTML = (this.loaded) ? 'No information' : 'Loading...';
-			wrapper.className = 'small dimmed';
+			wrapper.innerHTML = (this.loaded) ? "No information" : "Loading...";
+			wrapper.className = "small dimmed";
 			return wrapper;
 		}
 
 		for (var t in trains) {
 			var train = trains[t];
-			var trainWrapper = document.createElement('tr');
-			trainWrapper.className = 'normal';
+			var trainWrapper = document.createElement("tr");
+			trainWrapper.className = "normal";
 
 			if (this.config.displaySymbol) {
-				var symbolWrapper = document.createElement('td');
-				symbolWrapper.className = 'symbol';
-				var symbol = document.createElement('span');
+				var symbolWrapper = document.createElement("td");
+				symbolWrapper.className = "symbol";
+				var symbol = document.createElement("span");
 
-				var symbolName = train.trainKind in this.config.symbolMapping ? this.config.symbolMapping[train.trainKind] : this.config.symbolMapping['default'];
+				var symbolName = train.trainKind in this.config.symbolMapping ? this.config.symbolMapping[train.trainKind] : this.config.symbolMapping["default"];
 
-				symbol.className = 'fa fa-'+symbolName;
+				symbol.className = "fa fa-"+symbolName;
 				symbolWrapper.appendChild(symbol);
 				trainWrapper.appendChild(symbolWrapper);
 			}
 
-			var titleWrapper = document.createElement('td');
+			var titleWrapper = document.createElement("td");
 			titleWrapper.innerHTML = train.destination;
-			titleWrapper.className = 'title';
+			titleWrapper.className = "title";
 			trainWrapper.appendChild(titleWrapper);
 
-			var timeWrapper = document.createElement('td');
-			timeWrapper.innerHTML = moment(train.departureTime).format('HH:mm');
+			var timeWrapper = document.createElement("td");
+			timeWrapper.innerHTML = moment(train.departureTime).format("HH:mm");
 			if (train.departureDelay != 0) {
-				timeWrapper.innerHTML += '+' + train.departureDelay;
+				timeWrapper.innerHTML += "+" + train.departureDelay;
 			}
-			timeWrapper.className = 'bright align-left';
+			timeWrapper.className = "bright align-left";
 			trainWrapper.appendChild(timeWrapper);
 
-			var trackWrapper = document.createElement('td');
-			trackWrapper.innerHTML = train.track || '';
-			trackWrapper.className = 'track';
+			var trackWrapper = document.createElement("td");
+			trackWrapper.innerHTML = train.track || "";
+			trackWrapper.className = "track";
 			if (train.trackChanged) {
-				trackWrapper.className = 'bright';
+				trackWrapper.className = "bright";
 			}
 
 			if (train.cancelled) {
-				trainWrapper.style.textDecoration = 'line-through';
+				trainWrapper.style.textDecoration = "line-through";
 			}
 
 			trainWrapper.appendChild(trackWrapper);
@@ -131,7 +131,7 @@ Module.register('nstreinen', {
 	},
 
 	addStation: function(station, user, pass, reloadInterval) {
-		this.sendSocketNotification('ADD_STATION', {
+		this.sendSocketNotification("ADD_STATION", {
 			station: station,
 			user: user,
 			pass: pass,
@@ -148,7 +148,9 @@ Module.register('nstreinen', {
 
 	createTrainsList: function() {
 		var trains = this.trains[this.config.station];
-		if (trains === undefined) return [];
+		if (trains === undefined) {
+			return [];
+		}
 		trains = trains.slice(0, this.config.maxEntries);
 		return trains;
 	}
