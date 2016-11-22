@@ -9,6 +9,11 @@
   "author": "Chris van Marle",
   "license": "ISC",
   "dependencies": {
+    "grunt": "^1.0.1",
+    "grunt-eslint": "^19.0.0",
+    "grunt-jsonlint": "^1.1.0",
+    "grunt-markdownlint": "^1.0.15",
+    "grunt-stylelint": "^0.6.0",
     "node-rest-client": "^2.0.1"
   },
   "bugs": {
