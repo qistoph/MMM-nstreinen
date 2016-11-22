@@ -30,7 +30,10 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		clearTimeout(reloadTimer);
 		reloadTimer = null;
 
-		apiClient.methods.actueleVertrektijden({'path': {'station': station}}, handleApiResponse);
+		apiClient.methods.actueleVertrektijden({'path': {'station': station}}, handleApiResponse).on('error', function(err) {
+			fetchFailedCallback(self, 'Error fetching station: ' + err);
+			console.log(err.stack);
+		});
 	};
 
 	var handleApiResponse = function(data, response) {
