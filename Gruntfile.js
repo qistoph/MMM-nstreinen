@@ -34,6 +34,9 @@ module.exports = function(grunt) {
 				},
 				src: ["*.md"]
 			}
+		},
+		yamllint: {
+			all: [".travis.yml"]
 		}
 	});
 	grunt.loadNpmTasks("grunt-eslint");
