@@ -1,5 +1,6 @@
 Module.register("nstreinen", {
 	defaults: {
+		destination: null,
 		maxEntries: 5,
 		reloadInterval: 5 * 60 * 1000,
 		displaySymbol: true,
@@ -16,8 +17,7 @@ Module.register("nstreinen", {
 	},
 
 	init: function() {
-		this.apiUrl = "http://webservices.ns.nl/ns-api-avt?station=${station}";
-		this.trains = {};
+		this.trains = undefined;
 	},
 
 	start: function() {
@@ -27,7 +27,11 @@ Module.register("nstreinen", {
 			self.updateDom();
 		}, this.config.reloadInterval);
 
-		this.addStation(this.config.station, this.config.user, this.config.pass, this.config.reloadInterval);
+		if (this.config.destination) {
+			this.addTrip(this.config.station, this.config.destination, this.config.user, this.config.pass, this.config.maxEntries, this.config.reloadInterval);
+		} else {
+			this.addStation(this.config.station, this.config.user, this.config.pass, this.config.reloadInterval);
+		}
 	},
 
 	getStyles: function() {
@@ -40,10 +44,14 @@ Module.register("nstreinen", {
 
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
-		Log.info("Received: " + notification, payload);
 		if (notification === "STATION_EVENTS") {
 			if (this.hasStation(payload.station)) {
-				this.trains[payload.station] = payload.trains;
+				this.trains = payload.trains;
+				this.loaded = true;
+			}
+		} else if (notification === "TRIP_EVENTS") {
+			if (this.hasStation(payload.station) && this.hasDestination(payload.destination)) {
+				this.trains = payload.trains;
 				this.loaded = true;
 			}
 		} else if (notification === "FETCH_ERROR") {
@@ -139,6 +147,17 @@ Module.register("nstreinen", {
 		});
 	},
 
+	addTrip: function(station, destination, user, pass, maxEntries, reloadInterval) {
+		this.sendSocketNotification("ADD_TRIP", {
+			station: station,
+			destination: destination,
+			user: user,
+			pass: pass,
+			maxEntries: maxEntries,
+			reloadInterval: reloadInterval
+		});
+	},
+
 	hasStation: function(station) {
 		if(this.config.station === station) {
 			return true;
@@ -146,8 +165,15 @@ Module.register("nstreinen", {
 		return false;
 	},
 
+	hasDestination: function(destination) {
+		if (this.config.destination === destination) {
+			return true;
+		}
+		return false;
+	},
+
 	createTrainsList: function() {
-		var trains = this.trains[this.config.station];
+		var trains = this.trains;
 		if (trains === undefined) {
 			return [];
 		}

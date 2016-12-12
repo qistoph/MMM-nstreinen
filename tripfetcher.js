@@ -1,6 +1,6 @@
 var Client = require("node-rest-client").Client;
 
-var StationFetcher = function(url, user, pass, station, reloadInterval) {
+var StationFetcher = function(url, user, pass, station, destination, maxEntries, reloadInterval) {
 	var self = this;
 
 	var reloadTimer = null;
@@ -21,45 +21,54 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	}
 
 	var apiClient = new Client(opts);
-	apiClient.registerMethod("actueleVertrektijden", url, "GET");
+	apiClient.registerMethod("reisadvies", url, "GET");
 
-	/* fetchStation()
+	/* fetchTrip()
 	 * Initiates station fetch.
 	 */
-	var fetchStation = function() {
+	var fetchTrip = function() {
 		clearTimeout(reloadTimer);
 		reloadTimer = null;
 
-		apiClient.methods.actueleVertrektijden({"path": {"station": station}}, handleApiResponse).on("error", function(err) {
+		var dateTime = new Date();
+
+		apiClient.methods.reisadvies(
+			{"path": {"station": station, "destination": destination, "maxEntries": maxEntries, "dateTime": dateTime.toISOString()}},
+			handleApiResponse
+		).on("error", function(err) {
 			fetchFailedCallback(self, "Error fetching station: " + err);
 			console.log(err.stack);
 		});
 	};
 
 	var handleApiResponse = function(data, response) {
-		newTrains = [];
 
-		if (data === undefined || data.ActueleVertrekTijden === undefined || data.ActueleVertrekTijden.VertrekkendeTrein === undefined) {
-			fetchFailedCallback(self, "Received data empty or invalid.");
-			return;
-		}
+		var newTrains = [];
 
-		data.ActueleVertrekTijden.VertrekkendeTrein.forEach(function(vt) {
-			//{ RitNummer: [ "14839" ],
-			//  VertrekTijd: [ "2016-11-11T11:10:00+0100" ],
-			//  EindBestemming: [ "Hoorn" ],
-			//  TreinSoort: [ "Sprinter" ],
-			//  RouteTekst: [ "Uitgeest, Alkmaar" ],
-			//  Vervoerder: [ "NS" ],
-			//  VertrekSpoor: [ { _: "5", "$": [Object] } ] }
+		data.ReisMogelijkheden.ReisMogelijkheid.forEach(function(mogelijkheid) {
+			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"][0];
+			var vertrekSpoor = spoorInfo["_"];
+			var spoorWijziging = spoorInfo["$"]["wijziging"] === "true";
+			var vertraging = parseDelay(mogelijkheid.VertrekVertraging);
+
+			var trainTypes = [];
+			mogelijkheid.ReisDeel.forEach(function(deel) {
+				trainTypes.push(deel.VervoerType[0]);
+			});
+
+			var title = trainTypes.join(", ") + " (" + mogelijkheid.ActueleReisTijd + ")";
+
 			newTrains.push({
-				departureTime: vt.VertrekTijd[0],
-				departureDelay: parseDelay(vt.VertrekVertraging),
-				destination: vt.EindBestemming[0],
-				trainKind: vt.TreinSoort[0],
-				track: vt.VertrekSpoor[0]["_"],
-				trackChanged: vt.VertrekSpoor[0]["$"]["wijziging"] === "true",
-				cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] === "Stopbus i.p.v. trein" || vt.TreinSoort[0] === "Snelbus i.p.v. trein",
+				plannedTime: mogelijkheid.GeplandeReisTijd[0],
+				currentTime: mogelijkheid.ActueleReisTijd[0],
+				plannedDeparture: mogelijkheid.GeplandeVertrekTijd[0],
+				//departureTime: mogelijkheid.ActueleVertrekTijd[0],
+				departureTime: mogelijkheid.GeplandeVertrekTijd[0],
+				departureDelay: vertraging,
+				track: vertrekSpoor,
+				trackChanged: spoorWijziging,
+				trainTypes: trainTypes,
+				destination: title
 			});
 		});
 
@@ -79,7 +88,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		}
 
 		var m;
-		if ((m = delay.match(/^PT(\d+)M$/)) !== false) {
+		if ((m = delay.match(/^\+(\d+).*$/)) !== false) {
 			return 1*(m[1]);
 		}
 
@@ -87,43 +96,24 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		return 0;
 	}
 
-	/* parseNote()
-	 * Parses notes (opmerkingen) and returns true if train is cancelled.
-	 */
-	var parseNote = function(note) {
-		if (note === undefined || note[0] === undefined || note[0].Opmerking === undefined || note[0].Opmerking[0] === undefined) {
-			return false;
-		}
-
-		note = note[0].Opmerking[0];
-		var m;
-		if ((m = note.match(/Rijdt vandaag niet/i)) !== false) {
-			return true;
-		}
-
-		Log.warn("Unknown note: " + note);
-
-		return false;
-	}
-
 	/* scheduleTimer()
 	 * Schedule the timer for the next update.
 	 */
 	var scheduleTimer = function() {
-		//console.log("Schedule update timer.");
+		//console.log("Schedule update timer "+reloadInterval);
 		clearTimeout(reloadTimer);
 		reloadTimer = setTimeout(function() {
-			fetchStation();
+			fetchTrip();
 		}, reloadInterval);
 	};
 
 	/* public methods */
 
 	/* startFetch()
-	 * Initiate fetchStation();
+	 * Initiate fetchTrip();
 	 */
 	this.startFetch = function() {
-		fetchStation();
+		fetchTrip();
 	};
 
 	/* broadcastTrains()
@@ -159,6 +149,15 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	this.station = function() {
 		return station;
 	};
+
+	/* destination()
+	 * Returns the destination of this fetcher.
+	 *
+	 * return string - The destionation used in planning.
+	 */
+	this.destination = function() {
+		return destination;
+	}
 
 	/* url()
 	 * Returns the url of this fetcher.
