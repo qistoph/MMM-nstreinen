@@ -8,6 +8,7 @@ This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Shows informantion on trains departuring a configurable Dutch trainstation.
 
 ![Example Visualization](.previews/nstreinen.png)
+![Example Visualization with destination](.previews/nstreinen-destination.png)
 
 ## Installing the module
 
@@ -64,6 +65,11 @@ The following properties can be configured:
       <td><code>station</code></td>
       <td>The station to show trains for.<br>
       <br><b>Required</b></td>
+    </tr>
+    <tr>
+      <td><code>destination</code></td>
+      <td>The destination to show trains for. If this is configured the trains and required transfers from <code>station</code> to this destination will be shown.<br>
+      <br><b>Optional</b></td>
     </tr>
     <tr>
       <td><code>maxEntries</code></td>
