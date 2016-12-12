@@ -68,7 +68,9 @@ The following properties can be configured:
     </tr>
     <tr>
       <td><code>destination</code></td>
-      <td>The destination to show trains for. If this is configured the trains and required transfers from <code>station</code> to this destination will be shown.<br>
+      <td>The destination to show trains for. If this is configured the trains
+        and required transfers from <code>station</code> to this destination will
+        be shown.<br>
       <br><b>Optional</b></td>
     </tr>
     <tr>
