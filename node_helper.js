@@ -5,9 +5,6 @@ var TripFetcher = require("./tripfetcher.js");
 module.exports = NodeHelper.create({
 	// Override start method.
 	start: function() {
-		var self = this;
-		var events = [];
-
 		this.fetchers = [];
 		this.tripFetchers = [];
 

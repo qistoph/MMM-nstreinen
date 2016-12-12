@@ -1,3 +1,5 @@
+/* global Log */
+
 var Client = require("node-rest-client").Client;
 
 var StationFetcher = function(url, user, pass, station, destination, maxEntries, reloadInterval) {

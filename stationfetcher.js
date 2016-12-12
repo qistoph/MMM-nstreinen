@@ -1,3 +1,5 @@
+/* global Log */
+
 var Client = require("node-rest-client").Client;
 
 var StationFetcher = function(url, user, pass, station, reloadInterval) {
@@ -37,7 +39,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	};
 
 	var handleApiResponse = function(data, response) {
-		newTrains = [];
+		var newTrains = [];
 
 		if (data === undefined || data.ActueleVertrekTijden === undefined || data.ActueleVertrekTijden.VertrekkendeTrein === undefined) {
 			fetchFailedCallback(self, "Received data empty or invalid.");
@@ -96,8 +98,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		}
 
 		note = note[0].Opmerking[0];
-		var m;
-		if ((m = note.match(/Rijdt vandaag niet/i)) !== false) {
+		if (note.match(/Rijdt vandaag niet/i) !== false) {
 			return true;
 		}
 

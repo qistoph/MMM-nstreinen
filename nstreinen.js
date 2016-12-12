@@ -1,3 +1,5 @@
+/* global Module, Log, moment */
+
 Module.register("nstreinen", {
 	defaults: {
 		destination: null,
