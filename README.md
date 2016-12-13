@@ -1,8 +1,6 @@
 # NS Trains - MagicMirror² module
 
-<a href="https://travis-ci.org/qistoph/MMM-nstreinen">
-  <img src="https://travis-ci.org/qistoph/MMM-nstreinen.svg?branch=master" alt="Travis">
-</a>
+[![Build Status](https://travis-ci.org/qistoph/MMM-nstreinen.svg?branch=master)](https://travis-ci.org/qistoph/MMM-nstreinen)
 
 This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Shows informantion on trains departuring a configurable Dutch trainstation.
