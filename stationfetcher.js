@@ -41,6 +41,12 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	var handleApiResponse = function(data, response) {
 		var newTrains = [];
 
+		if (data.error) {
+			fetchFailedCallback(self, "Error fetching station: " + data.error.message[0]);
+			console.log(data.error.message[0]);
+			return;
+		}
+
 		if (data === undefined || data.ActueleVertrekTijden === undefined || data.ActueleVertrekTijden.VertrekkendeTrein === undefined) {
 			fetchFailedCallback(self, "Received data empty or invalid.");
 			return;

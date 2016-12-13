@@ -57,7 +57,7 @@ Module.register("nstreinen", {
 				this.loaded = true;
 			}
 		} else if (notification === "FETCH_ERROR") {
-			Log.error("NSTreinen Error. Could not fetch api: " + payload.url);
+			Log.error("NSTreinen Error. Could not fetch api: " + payload.error);
 		} else if (notification === "INCORRECT_URL") {
 			Log.error("NSTreinen Error. Incorrect url: " + payload.url);
 		} else {

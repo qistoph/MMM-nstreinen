@@ -47,6 +47,12 @@ var StationFetcher = function(url, user, pass, station, destination, maxEntries,
 
 		var newTrains = [];
 
+		if (data.error) {
+			fetchFailedCallback(self, "Error fetching trip: " + data.error.message[0]);
+			console.log(data.error.message[0]);
+			return;
+		}
+
 		data.ReisMogelijkheden.ReisMogelijkheid.forEach(function(mogelijkheid) {
 			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"][0];
 			var vertrekSpoor = spoorInfo["_"];
