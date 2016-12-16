@@ -47,7 +47,7 @@ Module.register("nstreinen", {
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "STATION_EVENTS") {
-			if (this.hasStation(payload.station)) {
+			if (this.hasStation(payload.station) && this.hasDestination(null)) {
 				this.trains = payload.trains;
 				this.loaded = true;
 			}
