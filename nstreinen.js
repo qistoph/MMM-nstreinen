@@ -50,16 +50,20 @@ Module.register("nstreinen", {
 			if (this.hasStation(payload.station) && this.hasDestination(null)) {
 				this.trains = payload.trains;
 				this.loaded = true;
+				this.error = null;
 			}
 		} else if (notification === "TRIP_EVENTS") {
 			if (this.hasStation(payload.station) && this.hasDestination(payload.destination)) {
 				this.trains = payload.trains;
 				this.loaded = true;
+				this.error = null;
 			}
 		} else if (notification === "FETCH_ERROR") {
 			Log.error("NSTreinen Error. Could not fetch api: " + payload.error);
+			this.error = payload.error;
 		} else if (notification === "INCORRECT_URL") {
 			Log.error("NSTreinen Error. Incorrect url: " + payload.url);
+			this.error = "Invalid URL";
 		} else {
 			Log.log("NSTreinen received an unknown socket notification: " + notification);
 		}
@@ -69,8 +73,17 @@ Module.register("nstreinen", {
 	},
 
 	getDom: function() {
+		var wrapper;
+
+		if (this.error) {
+			wrapper = document.createElement("div");
+			wrapper.className = "small";
+			wrapper.innerText = this.error;
+			return wrapper;
+		}
+
 		var trains = this.createTrainsList();
-		var wrapper = document.createElement("table");
+		wrapper = document.createElement("table");
 		wrapper.className = "small";
 
 		if (trains.length === 0) {
