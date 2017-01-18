@@ -4,10 +4,11 @@
   "description": "MagicMirror² module to show Dutch train information (NS)",
   "main": "test.js",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "precommit": "grunt precommit"
   },
   "pre-commit": [
-    "test"
+    "precommit"
   ],
   "author": "Chris van Marle",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "grunt-eslint": "^19.0.0",
     "grunt-jsonlint": "^1.1.0",
     "grunt-markdownlint": "^1.0.15",
+    "grunt-staged": "^0.1.0",
     "grunt-stylelint": "^0.6.0",
     "pre-commit": "^1.2.1",
     "stylelint": "^7.6.0",
