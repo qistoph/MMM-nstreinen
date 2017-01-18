@@ -1,5 +1,3 @@
-/* global Log */
-
 var Client = require("node-rest-client").Client;
 
 var StationFetcher = function(url, user, pass, station, reloadInterval) {
@@ -60,15 +58,21 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			//  RouteTekst: [ "Uitgeest, Alkmaar" ],
 			//  Vervoerder: [ "NS" ],
 			//  VertrekSpoor: [ { _: "5", "$": [Object] } ] }
-			newTrains.push({
+			var depart = {
 				departureTime: vt.VertrekTijd[0],
 				departureDelay: parseDelay(vt.VertrekVertraging),
 				destination: vt.EindBestemming[0],
 				trainKind: vt.TreinSoort[0],
 				track: vt.VertrekSpoor[0]["_"],
 				trackChanged: vt.VertrekSpoor[0]["$"]["wijziging"] === "true",
-				cancelled: parseNote(vt.Opmerkingen) || vt.TreinSoort[0] === "Stopbus i.p.v. trein" || vt.TreinSoort[0] === "Snelbus i.p.v. trein",
-			});
+			};
+
+			parseNote(vt.Opmerkingen, depart);
+			if (vt.TreinSoort[0] === "Stopbus i.p.v. trein" || vt.TreinSoort[0] === "Snelbus i.p.v. trein") {
+				depart.cancelled = true;
+			}
+
+			newTrains.push(depart);
 		});
 
 		trains = newTrains;
@@ -87,30 +91,36 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		}
 
 		var m;
-		if ((m = delay.match(/^PT(\d+)M$/)) !== false) {
+		if ((m = delay.match(/^PT(\d+)M$/)) !== null) {
 			return 1*(m[1]);
 		}
 
-		Log.error("Unknown delay time: " + delay);
+		console.error("Unknown delay time: " + delay);
 		return 0;
 	}
 
 	/* parseNote()
-	 * Parses notes (opmerkingen) and returns true if train is cancelled.
+	 * Parses notes (opmerkingen) and changes properties in depart to match the note
 	 */
-	var parseNote = function(note) {
+	var parseNote = function(note, depart) {
 		if (note === undefined || note[0] === undefined || note[0].Opmerking === undefined || note[0].Opmerking[0] === undefined) {
-			return false;
+			return;
 		}
 
 		note = note[0].Opmerking[0];
-		if (note.match(/Rijdt vandaag niet/i) !== false) {
-			return true;
+		if (note.match(/Rijdt vandaag niet/i) !== null) {
+			depart.cancelled = true;
+			return;
+		} else {
+			var m = note.match(/Rijdt niet verder dan\s+(.*)\s*/);
+			if(m) {
+				depart.destination = m[1];
+				depart.destinationChanged = true;
+				return;
+			}
 		}
 
-		Log.warn("Unknown note: " + note);
-
-		return false;
+		console.warn("Unknown note: " + note);
 	}
 
 	/* scheduleTimer()

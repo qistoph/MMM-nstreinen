@@ -46,6 +46,7 @@ Module.register("nstreinen", {
 
 	// Override socket notification handler.
 	socketNotificationReceived: function (notification, payload) {
+		//console.log(payload);
 		if (notification === "STATION_EVENTS") {
 			if (this.hasStation(payload.station) && this.hasDestination(null)) {
 				this.trains = payload.trains;
@@ -113,6 +114,9 @@ Module.register("nstreinen", {
 			titleWrapper.innerHTML = train.destination;
 			titleWrapper.className = "title";
 			trainWrapper.appendChild(titleWrapper);
+			if (train.destinationChanged) {
+				trainWrapper.className = "bright";
+			}
 
 			var timeWrapper = document.createElement("td");
 			timeWrapper.innerHTML = moment(train.departureTime).format("HH:mm");

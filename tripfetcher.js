@@ -1,5 +1,3 @@
-/* global Log */
-
 var Client = require("node-rest-client").Client;
 
 var StationFetcher = function(url, user, pass, station, destination, maxEntries, reloadInterval) {
@@ -96,11 +94,11 @@ var StationFetcher = function(url, user, pass, station, destination, maxEntries,
 		}
 
 		var m;
-		if ((m = delay.match(/^\+(\d+).*$/)) !== false) {
+		if ((m = delay.match(/^\+(\d+).*$/)) !== null) {
 			return 1*(m[1]);
 		}
 
-		Log.error("Unknown delay time: " + delay);
+		console.error("Unknown delay time: " + delay);
 		return 0;
 	}
 
