@@ -70,7 +70,6 @@ Module.register("nstreinen", {
 		}
 
 		this.updateDom();
-		this.show();
 	},
 
 	getDom: function() {
