@@ -22,7 +22,7 @@ module.exports = NodeHelper.create({
 			this.createFetcher(payload.station, payload.user, payload.pass, payload.reloadInterval);
 		} else if(notification === "ADD_TRIP") {
 			//console.log("ADD_TRIP: ", payload);
-			this.createTripFetcher(payload.station, payload.destination, payload.user, payload.pass, payload.maxEntries, payload.reloadInterval);
+			this.createTripFetcher(payload.station, payload.destination, payload.user, payload.pass, payload.departureOffset, payload.maxEntries, payload.reloadInterval);
 		}
 	},
 
@@ -69,14 +69,14 @@ module.exports = NodeHelper.create({
 		fetcher.startFetch();
 	},
 
-	createTripFetcher: function(station, destination, user, pass, maxEntries, reloadInterval) {
+	createTripFetcher: function(station, destination, user, pass, departureOffset, maxEntries, reloadInterval) {
 		var self = this;
 
 		var key = station + "-" + destination;
 		var fetcher;
 		if (typeof self.tripFetchers[key] === "undefined") {
 			console.log("Create new trip fetcher for trip: " + key + ", Interval: " + reloadInterval);
-			fetcher = new TripFetcher(this.apiTripUrl, user, pass, station, destination, maxEntries, reloadInterval);
+			fetcher = new TripFetcher(this.apiTripUrl, user, pass, station, destination, departureOffset, maxEntries, reloadInterval);
 
 			fetcher.onReceive(function(fetcher) {
 				self.sendSocketNotification("TRIP_EVENTS", {

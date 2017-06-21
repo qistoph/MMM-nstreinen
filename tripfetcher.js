@@ -1,6 +1,6 @@
 var Client = require("node-rest-client").Client;
 
-var StationFetcher = function(url, user, pass, station, destination, maxEntries, reloadInterval) {
+var TripFetcher = function(url, user, pass, station, destination, departureOffset, maxEntries, reloadInterval) {
 	var self = this;
 
 	var reloadTimer = null;
@@ -31,6 +31,7 @@ var StationFetcher = function(url, user, pass, station, destination, maxEntries,
 		reloadTimer = null;
 
 		var dateTime = new Date();
+		dateTime = new Date(dateTime.getTime() + departureOffset * 1000);
 
 		apiClient.methods.reisadvies(
 			{"path": {"station": station, "destination": destination, "maxEntries": maxEntries, "dateTime": dateTime.toISOString()}},
@@ -185,4 +186,4 @@ var StationFetcher = function(url, user, pass, station, destination, maxEntries,
 
 };
 
-module.exports = StationFetcher;
+module.exports = TripFetcher;

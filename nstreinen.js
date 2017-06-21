@@ -5,6 +5,7 @@ Module.register("nstreinen", {
 		destination: null,
 		maxEntries: 5,
 		reloadInterval: 5 * 60 * 1000,
+		departureOffset: 0,
 		displaySymbol: true,
 		symbolMapping: {
 			"Intercity": "train",
@@ -30,7 +31,7 @@ Module.register("nstreinen", {
 		}, this.config.reloadInterval);
 
 		if (this.config.destination) {
-			this.addTrip(this.config.station, this.config.destination, this.config.user, this.config.pass, this.config.maxEntries, this.config.reloadInterval);
+			this.addTrip(this.config.station, this.config.destination, this.config.user, this.config.pass, this.config.departureOffset, this.config.maxEntries, this.config.reloadInterval);
 		} else {
 			this.addStation(this.config.station, this.config.user, this.config.pass, this.config.reloadInterval);
 		}
@@ -165,12 +166,13 @@ Module.register("nstreinen", {
 		});
 	},
 
-	addTrip: function(station, destination, user, pass, maxEntries, reloadInterval) {
+	addTrip: function(station, destination, user, pass, departureOffset, maxEntries, reloadInterval) {
 		this.sendSocketNotification("ADD_TRIP", {
 			station: station,
 			destination: destination,
 			user: user,
 			pass: pass,
+			departureOffset: departureOffset,
 			maxEntries: maxEntries,
 			reloadInterval: reloadInterval
 		});
