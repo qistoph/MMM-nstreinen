@@ -49,6 +49,7 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 		if (data.error) {
 			fetchFailedCallback(self, "Error fetching trip: " + data.error.message[0]);
 			console.log(data.error.message[0]);
+			scheduleTimer();
 			return;
 		}
 
