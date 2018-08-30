@@ -48,6 +48,7 @@ Option | Description
 `destination` | The destination to show trains for. If this is configured the trains and required transfers from `station` to this destination will be shown.<br>**Optional**
 `maxEntries` | Maximum number of trains to show per station.<br>**Default value:** `5`
 `reloadInterval` | Number of milliseconds between refresh.<br>Keep in mind there is a maximum of 50.000 requests per day for the API.<br>**Default value:** `5 * 60 * 1000` (5 minutes)
+`departureOffset` | Trip planning only, requires destination: Number of seconds to 'delay' the trip plan with.<br>Especially usefull when you need time to travel to the train station.<br>**Default value:** `0` (0 seconds)
 `displaySymbol` | Defines wether or not to show a symbol for each line.<br>**Possible values:** `true` or `false`.<br>**Default value:** `true`
 `symbolMapping` | Maps the train types to the symbol to show.<br>If the train type is not found, the symbol for `default` is used.<br>**Possible symbols:** See [Font Awesome](http://fontawesome.io/icons/) website.<br>**Default value:** See [Default symbolMapping](#default-symbolmapping).
 `fade` | Fade the trains listed to black. (Gradient)<br>**Possible values:** `true` or `false`<br>**Default value:** `true`
