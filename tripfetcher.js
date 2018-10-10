@@ -67,7 +67,7 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 
 			var title = trainTypes.join(", ") + " (" + mogelijkheid.ActueleReisTijd + ")";
 
-			var cancelled = status == 'NIET-MOGELIJK';
+			var cancelled = status == "NIET-MOGELIJK";
 
 			newTrains.push({
 				plannedTime: mogelijkheid.GeplandeReisTijd[0],

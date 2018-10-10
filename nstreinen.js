@@ -112,7 +112,7 @@ Module.register("nstreinen", {
 				if(train.meldingen !== undefined && train.meldingen.length > 0) {
 					var warn = document.createElement("span");
 					warn.className = "fa fa-exclamation-triangle";
-					symbolWrapper.appendChild(document.createTextNode('\u00A0'));
+					symbolWrapper.appendChild(document.createTextNode("\u00A0"));
 					symbolWrapper.appendChild(warn);
 				}
 
