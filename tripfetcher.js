@@ -43,7 +43,6 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 	};
 
 	var handleApiResponse = function(data, response) {
-
 		var newTrains = [];
 
 		if (data.error) {
@@ -54,6 +53,8 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 		}
 
 		data.ReisMogelijkheden.ReisMogelijkheid.forEach(function(mogelijkheid) {
+			var status = mogelijkheid.Status[0];
+			var meldingen = mogelijkheid.Melding;
 			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"][0];
 			var vertrekSpoor = spoorInfo["_"];
 			var spoorWijziging = spoorInfo["$"]["wijziging"] === "true";
@@ -66,6 +67,8 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 
 			var title = trainTypes.join(", ") + " (" + mogelijkheid.ActueleReisTijd + ")";
 
+			var cancelled = status == 'NIET-MOGELIJK';
+
 			newTrains.push({
 				plannedTime: mogelijkheid.GeplandeReisTijd[0],
 				currentTime: mogelijkheid.ActueleReisTijd[0],
@@ -76,7 +79,10 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 				track: vertrekSpoor,
 				trackChanged: spoorWijziging,
 				trainTypes: trainTypes,
-				destination: title
+				destination: title,
+				status: status,
+				cancelled: cancelled,
+				meldingen: meldingen
 			});
 		});
 

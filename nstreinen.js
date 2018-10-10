@@ -98,6 +98,7 @@ Module.register("nstreinen", {
 			var trainWrapper = document.createElement("tr");
 			trainWrapper.className = "normal";
 
+
 			if (this.config.displaySymbol) {
 				var symbolWrapper = document.createElement("td");
 				symbolWrapper.className = "symbol";
@@ -107,6 +108,14 @@ Module.register("nstreinen", {
 
 				symbol.className = "fa fa-"+symbolName;
 				symbolWrapper.appendChild(symbol);
+
+				if(train.meldingen !== undefined && train.meldingen.length > 0) {
+					var warn = document.createElement("span");
+					warn.className = "fa fa-exclamation-triangle";
+					symbolWrapper.appendChild(document.createTextNode('\u00A0'));
+					symbolWrapper.appendChild(warn);
+				}
+
 				trainWrapper.appendChild(symbolWrapper);
 			}
 
