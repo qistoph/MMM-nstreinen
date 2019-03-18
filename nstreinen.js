@@ -25,16 +25,27 @@ Module.register("nstreinen", {
 
 	start: function() {
 		Log.info("Starting module: " + this.name);
-		var self = this;
-		setInterval(function() {
-			self.updateDom();
-		}, this.config.reloadInterval);
 
 		if (this.config.destination) {
 			this.addTrip(this.config.station, this.config.destination, this.config.user, this.config.pass, this.config.departureOffset, this.config.maxEntries, this.config.reloadInterval);
 		} else {
 			this.addStation(this.config.station, this.config.user, this.config.pass, this.config.reloadInterval);
 		}
+
+		this.resume();
+	},
+
+	suspend: function() {
+		clearInterval(this.reloadTimer);
+		Log.info("NS treinen suspend()");
+	},
+
+	resume: function() {
+		Log.info("NS treinen resume()");
+		var self = this;
+		this.reloadTimer = setInterval(function() {
+			self.updateDom();
+		}, this.config.reloadInterval);
 	},
 
 	getStyles: function() {
