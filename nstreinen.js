@@ -142,8 +142,9 @@ Module.register("nstreinen", {
 			timeWrapper.innerHTML = moment(train.departureTime).format("HH:mm");
 			if (train.departureDelay != 0) {
 				timeWrapper.innerHTML += "+" + train.departureDelay;
+				trainWrapper.className += " delayed";
 			}
-			timeWrapper.className = "bright align-left";
+			timeWrapper.className = "time bright align-left";
 			trainWrapper.appendChild(timeWrapper);
 
 			var trackWrapper = document.createElement("td");
