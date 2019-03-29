@@ -128,6 +128,14 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 	 */
 	this.startFetch = function() {
 		fetchTrip();
+		// fetchTrip will call scheduleTimer for the next call
+	};
+
+	/* stopFetch()
+	 * Stop fetching this info (e.g. to suspend)
+	 */
+	this.stopFetch = function() {
+		clearTimeout(reloadTimer);
 	};
 
 	/* broadcastTrains()
