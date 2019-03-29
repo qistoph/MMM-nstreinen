@@ -95,11 +95,6 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 			return 0;
 		}
 
-		delay = delay[0]; // XML object is put in arrays
-		if (delay === undefined) {
-			return 0;
-		}
-
 		var m;
 		if ((m = delay.match(/^\+(\d+).*$/)) !== null) {
 			return 1*(m[1]);

@@ -88,11 +88,6 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			return 0;
 		}
 
-		delay = delay[0]; // XML object is put in arrays
-		if (delay === undefined) {
-			return 0;
-		}
-
 		var m;
 		if ((m = delay.match(/^PT(\d+)M$/)) !== null) {
 			return 1*(m[1]);
