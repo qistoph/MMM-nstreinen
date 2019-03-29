@@ -62,12 +62,12 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 			//  Vervoerder: [ "NS" ],
 			//  VertrekSpoor: [ { _: "5", "$": [Object] } ] }
 			var depart = {
-				departureTime: vt.VertrekTijd[0],
+				departureTime: vt.VertrekTijd,
 				departureDelay: parseDelay(vt.VertrekVertraging),
-				destination: vt.EindBestemming[0],
-				trainKind: vt.TreinSoort[0],
-				track: vt.VertrekSpoor[0]["_"],
-				trackChanged: vt.VertrekSpoor[0]["$"]["wijziging"] === "true",
+				destination: vt.EindBestemming,
+				trainKind: vt.TreinSoort,
+				track: vt.VertrekSpoor["_"],
+				trackChanged: vt.VertrekSpoor["$"]["wijziging"] === "true",
 			};
 
 			parseNote(vt.Opmerkingen, depart);

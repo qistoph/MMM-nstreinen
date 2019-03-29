@@ -53,16 +53,16 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 		}
 
 		data.ReisMogelijkheden.ReisMogelijkheid.forEach(function(mogelijkheid) {
-			var status = mogelijkheid.Status[0];
+			var status = mogelijkheid.Status;
 			var meldingen = mogelijkheid.Melding;
-			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"][0];
+			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"];
 			var vertrekSpoor = spoorInfo["_"];
 			var spoorWijziging = spoorInfo["$"]["wijziging"] === "true";
 			var vertraging = parseDelay(mogelijkheid.VertrekVertraging);
 
 			var trainTypes = [];
 			mogelijkheid.ReisDeel.forEach(function(deel) {
-				trainTypes.push(deel.VervoerType[0]);
+				trainTypes.push(deel.VervoerType);
 			});
 
 			var title = trainTypes.join(", ") + " (" + mogelijkheid.ActueleReisTijd + ")";
@@ -70,11 +70,10 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 			var cancelled = status == "NIET-MOGELIJK";
 
 			newTrains.push({
-				plannedTime: mogelijkheid.GeplandeReisTijd[0],
-				currentTime: mogelijkheid.ActueleReisTijd[0],
-				plannedDeparture: mogelijkheid.GeplandeVertrekTijd[0],
-				//departureTime: mogelijkheid.ActueleVertrekTijd[0],
-				departureTime: mogelijkheid.GeplandeVertrekTijd[0],
+				plannedTime: mogelijkheid.GeplandeReisTijd,
+				currentTime: mogelijkheid.ActueleReisTijd,
+				plannedDeparture: mogelijkheid.GeplandeVertrekTijd,
+				departureTime: mogelijkheid.GeplandeVertrekTijd,
 				departureDelay: vertraging,
 				track: vertrekSpoor,
 				trackChanged: spoorWijziging,
