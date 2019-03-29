@@ -33,6 +33,7 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 		apiClient.methods.actueleVertrektijden({"path": {"station": station}}, handleApiResponse).on("error", function(err) {
 			fetchFailedCallback(self, "Error fetching station: " + err);
 			console.log(err.stack);
+			scheduleTimer();
 		});
 	};
 
@@ -143,6 +144,14 @@ var StationFetcher = function(url, user, pass, station, reloadInterval) {
 	 */
 	this.startFetch = function() {
 		fetchStation();
+		// fetchStation will call scheduleTimer for the next call
+	};
+
+	/* stopFetch()
+	 * Stop fetching this info (e.g. to suspend)
+	 */
+	this.stopFetch = function() {
+		clearTimeout(reloadTimer);
 	};
 
 	/* broadcastTrains()

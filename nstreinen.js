@@ -36,16 +36,13 @@ Module.register("nstreinen", {
 	},
 
 	suspend: function() {
-		clearInterval(this.reloadTimer);
 		Log.info("NS treinen suspend()");
+		this.sendSocketNotification("SUSPEND", {});
 	},
 
 	resume: function() {
 		Log.info("NS treinen resume()");
-		var self = this;
-		this.reloadTimer = setInterval(function() {
-			self.updateDom();
-		}, this.config.reloadInterval);
+		this.sendSocketNotification("RESUME", {});
 	},
 
 	getStyles: function() {

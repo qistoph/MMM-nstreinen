@@ -6,12 +6,18 @@ module.exports = NodeHelper.create({
 	// Override start method.
 	start: function() {
 		this.fetchers = [];
-		this.tripFetchers = [];
 
 		this.apiUrl = "http://webservices.ns.nl/ns-api-avt?station=${station}";
 		this.apiTripUrl = "http://webservices.ns.nl/ns-api-treinplanner?fromStation=${station}&toStation=${destination}&previousAdvices=0&nextAdvices=${maxEntries}&dateTime=${dateTime}&Departure=true&hslAllowed=true&yearCard=false";
 
 		console.log("Starting node helper for: " + this.name);
+	},
+
+	forFetchers: function(callback) {
+		var self = this;
+		Object.keys(this.fetchers).forEach(function(key) {
+			callback(self.fetchers[key]);
+		});
 	},
 
 	// Override socketNotificationReceived method.
@@ -23,6 +29,10 @@ module.exports = NodeHelper.create({
 		} else if(notification === "ADD_TRIP") {
 			//console.log("ADD_TRIP: ", payload);
 			this.createTripFetcher(payload.station, payload.destination, payload.user, payload.pass, payload.departureOffset, payload.maxEntries, payload.reloadInterval);
+		} else if(notification === "SUSPEND") {
+			this.forFetchers(f => f.stopFetch() );
+		} else if(notification === "RESUME") {
+			this.forFetchers(f => f.startFetch() );
 		}
 	},
 
@@ -74,7 +84,7 @@ module.exports = NodeHelper.create({
 
 		var key = station + "-" + destination;
 		var fetcher;
-		if (typeof self.tripFetchers[key] === "undefined") {
+		if (typeof self.fetchers[key] === "undefined") {
 			console.log("Create new trip fetcher for trip: " + key + ", Interval: " + reloadInterval);
 			fetcher = new TripFetcher(this.apiTripUrl, user, pass, station, destination, departureOffset, maxEntries, reloadInterval);
 
@@ -96,7 +106,7 @@ module.exports = NodeHelper.create({
 			self.fetchers[key] = fetcher;
 		} else {
 			console.log("Use existing station fetcher for trip: " + key);
-			fetcher = self.tripFetchers[key];
+			fetcher = self.fetchers[key];
 			fetcher.broadcastTrains();
 		}
 
