@@ -55,13 +55,19 @@ var TripFetcher = function(url, user, pass, station, destination, departureOffse
 		data.ReisMogelijkheden.ReisMogelijkheid.forEach(function(mogelijkheid) {
 			var status = mogelijkheid.Status;
 			var meldingen = mogelijkheid.Melding;
-			var spoorInfo = mogelijkheid.ReisDeel[0].ReisStop[0]["Spoor"];
+			var reisDeel = mogelijkheid.ReisDeel;
+			if(!Array.isArray(reisDeel)) {
+				// If node-rest-client returns single object
+				// convert it to an array to simplify code below
+				reisDeel = [reisDeel];
+			}
+			var spoorInfo = reisDeel[0].ReisStop[0]["Spoor"];
 			var vertrekSpoor = spoorInfo["_"];
 			var spoorWijziging = spoorInfo["$"]["wijziging"] === "true";
 			var vertraging = parseDelay(mogelijkheid.VertrekVertraging);
 
 			var trainTypes = [];
-			mogelijkheid.ReisDeel.forEach(function(deel) {
+			reisDeel.forEach(function(deel) {
 				trainTypes.push(deel.VervoerType);
 			});
 
