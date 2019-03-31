@@ -11,8 +11,14 @@ Shows informantion on trains departuring a configurable Dutch trainstation.
 ## Installing the module
 
 To install the module, just clone this repository to your __modules__ folder:
-`git clone https://github.com/qistoph/MMM-nstreinen.git nstreinen`.
-Then run `cd nstreinen` and `npm install` to install the dependencies.
+- `git clone https://github.com/qistoph/MMM-nstreinen.git nstreinen`
+- `cd nstreinen`
+- `npm install` to install the dependencies
+
+## Updating the module
+Two simple steps, in the module dir:
+- `git pull`
+- `npm install` to update the dependencies 
 
 ## Using the module
 
