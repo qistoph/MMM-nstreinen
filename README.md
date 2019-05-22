@@ -5,6 +5,8 @@
 This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Shows informantion on trains departuring a configurable Dutch trainstation.
 
+Please note: **V2 is still in test, feel free to use, but expect bugs**
+
 (old images, will be replaced for V2)
 ![Example Visualization](.previews/nstreinen.png)
 ![Example Visualization with destination](.previews/nstreinen-destination.png)
