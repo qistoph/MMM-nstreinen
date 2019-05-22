@@ -5,6 +5,7 @@
 This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Shows informantion on trains departuring a configurable Dutch trainstation.
 
+(old images, will be replaced for V2)
 ![Example Visualization](.previews/nstreinen.png)
 ![Example Visualization with destination](.previews/nstreinen-destination.png)
 
@@ -12,7 +13,7 @@ Shows informantion on trains departuring a configurable Dutch trainstation.
 
 To install the module, just clone this repository to your __modules__ folder:
 
-- `git clone https://github.com/qistoph/MMM-nstreinen.git nstreinen`
+- `git clone --single-branch -b v2 https://github.com/qistoph/MMM-nstreinen.git nstreinen`
 - `cd nstreinen`
 - `npm install` to install the dependencies
 
@@ -25,8 +26,8 @@ Two simple steps, in the module dir:
 
 ## Using the module
 
-You will need a username and password for the NS-API.
-These can be requested at <http://www.ns.nl/reisinformatie/ns-api>.
+You will need an apikey for the NS-API.
+This can be requested at <http://www.ns.nl/reisinformatie/ns-api>.
 
 To use this module, add it to the modules array in the `config/config.js` file:
 
@@ -37,9 +38,8 @@ modules: [
     position: 'top_right',
     header: 'Treinen vanaf Schiphol Airport',
     config: {
-      user:'<NS-API-username>',
-      pass: '<NS-API-password>',
-      station: 'Schiphol Airport'
+      apiKey:'<NS-API-Key>',
+      fromStation: 'Schiphol Airport'
     }
   }
 ]
@@ -51,10 +51,9 @@ The following properties can be configured:
 
 Option | Description
 ------ | -----------
-`user` | Your API username. Most likely in the form of an e-mailaddress.<br>Request your credentials at [NS API](http://www.ns.nl/reisinformatie/ns-api)<br>**Required**
-`pass` | Your API password.<br>**Required**
-`station` | The station to show trains for.<br>**Required**
-`destination` | The destination to show trains for. If this is configured the trains and required transfers from `station` to this destination will be shown.<br>**Optional**
+`apiKey` | Your API key. <br>Request your credentials at [NS API](http://www.ns.nl/reisinformatie/ns-api)<br>**Required**
+`fromStation` | The station to show trains for.<br>**Required**
+`toStation` | The destination to show trains for. If this is configured the trains and required transfers from `station` to this destination will be shown.<br>**Optional**
 `maxEntries` | Maximum number of trains to show per station.<br>**Default value:** `5`
 `reloadInterval` | Number of milliseconds between refresh.<br>Keep in mind there is a maximum of 50.000 requests per day for the API.<br>**Default value:** `5 * 60 * 1000` (5 minutes)
 `departureOffset` | Trip planning only, requires destination: Number of seconds to 'delay' the trip plan with.<br>Especially usefull when you need time to travel to the train station.<br>**Default value:** `0` (0 seconds)
@@ -67,6 +66,8 @@ Option | Description
 
 ````javascript
 symbolMapping: {
+  'IC': 'train',
+  'SPR': 'stop-circle',
   'Intercity': 'train',
   'Intercity direct': 'forward',
   'Sprinter': 'stop-circle',

@@ -1,15 +1,10 @@
 var NodeHelper = require("node_helper");
-var StationFetcher = require("./stationfetcher.js");
-var TripFetcher = require("./tripfetcher.js");
+var NsFetcher = require("./NsFetcher.js");
 
 module.exports = NodeHelper.create({
 	// Override start method.
 	start: function() {
-		this.fetchers = [];
-
-		this.apiUrl = "http://webservices.ns.nl/ns-api-avt?station=${station}";
-		this.apiTripUrl = "http://webservices.ns.nl/ns-api-treinplanner?fromStation=${station}&toStation=${destination}&previousAdvices=0&nextAdvices=${maxEntries}&dateTime=${dateTime}&Departure=true&hslAllowed=true&yearCard=false";
-
+		this.fetchers = {};
 		console.log("Starting node helper for: " + this.name);
 	},
 
@@ -23,12 +18,8 @@ module.exports = NodeHelper.create({
 	// Override socketNotificationReceived method.
 	socketNotificationReceived: function(notification, payload) {
 		//console.log("Notification received: " + notification);
-		if (notification === "ADD_STATION") {
-			//console.log("ADD_STATION: ");
-			this.createFetcher(payload.station, payload.user, payload.pass, payload.reloadInterval);
-		} else if(notification === "ADD_TRIP") {
-			//console.log("ADD_TRIP: ", payload);
-			this.createTripFetcher(payload.station, payload.destination, payload.user, payload.pass, payload.departureOffset, payload.maxEntries, payload.reloadInterval);
+		if (notification === "ADD_CONFIG") {
+			this.createFetcher(payload);
 		} else if(notification === "SUSPEND") {
 			this.forFetchers(f => f.stopFetch() );
 		} else if(notification === "RESUME") {
@@ -36,7 +27,7 @@ module.exports = NodeHelper.create({
 		}
 	},
 
-	/* createFetcher(station)
+	/* createFetcher(config)
 	 * Creates a fetcher for a station if it doesn"t exist yet.
 	 * Otherwise it reuses the existing one.
 	 *
@@ -44,70 +35,35 @@ module.exports = NodeHelper.create({
 	 * attribute reloadInterval number - Reload interval in milliseconds.
 	 */
 
-	createFetcher: function(station, user, pass, reloadInterval) {
+	createFetcher: function(config) { //station, user, pass, reloadInterval) {
 		var self = this;
 
-		var fetcher;
-		if (typeof self.fetchers[station] === "undefined") {
-			console.log("Create new station fetcher for station: " + station + " - Interval: " + reloadInterval);
-			fetcher = new StationFetcher(this.apiUrl, user, pass, station, reloadInterval);
-
-			fetcher.onReceive(function(fetcher) {
-				//console.log("Broadcast events.");
-				//console.log(fetcher.events());
-
-				self.sendSocketNotification("STATION_EVENTS", {
-					station: fetcher.station(),
-					trains: fetcher.trains()
-				});
-			});
-
-			fetcher.onError(function(fetcher, error) {
-				self.sendSocketNotification("FETCH_ERROR", {
-					station: fetcher.station(),
-					error: error
-				});
-			});
-
-			self.fetchers[station] = fetcher;
-		} else {
-			console.log("Use existing station fetcher for station: " + station);
-			fetcher = self.fetchers[station];
-			fetcher.broadcastTrains();
+		if (!("moduleId" in config)) {
+			console.log("nstreinen createFetcher called without moduleId");
+			return;
 		}
 
-		fetcher.startFetch();
-	},
-
-	createTripFetcher: function(station, destination, user, pass, departureOffset, maxEntries, reloadInterval) {
-		var self = this;
-
-		var key = station + "-" + destination;
 		var fetcher;
-		if (typeof self.fetchers[key] === "undefined") {
-			console.log("Create new trip fetcher for trip: " + key + ", Interval: " + reloadInterval);
-			fetcher = new TripFetcher(this.apiTripUrl, user, pass, station, destination, departureOffset, maxEntries, reloadInterval);
 
-			fetcher.onReceive(function(fetcher) {
-				self.sendSocketNotification("TRIP_EVENTS", {
-					station: fetcher.station(),
-					destination: fetcher.destination(),
-					trains: fetcher.trains()
-				});
+		if (typeof self.fetchers[config.moduleId] === "undefined") {
+			console.log("Create new fetcher for moduleId: " + config.moduleId);
+			fetcher = new NsFetcher(config);
+
+			fetcher.onReceive(function(data) {
+				//console.log("Received:", data);
+				self.sendSocketNotification("DATA", {moduleId: config.moduleId, trains: data});
 			});
 
-			fetcher.onError(function(fetcher, error) {
-				self.sendSocketNotification("FETCH_ERROR", {
-					station: fetcher.station(),
-					error: error
-				});
+			fetcher.onError(function(error) {
+				console.log("Error:", error);
+				self.sendSocketNotification("FETCH_ERROR", {moduleId: config.moduleId, error: error});
 			});
 
-			self.fetchers[key] = fetcher;
+			self.fetchers[config.moduleId] = fetcher;
 		} else {
-			console.log("Use existing station fetcher for trip: " + key);
-			fetcher = self.fetchers[key];
-			fetcher.broadcastTrains();
+			console.log("Use existing fetcher for moduleId: " + config.moduleId);
+			fetcher = self.fetchers[config.moduleId];
+			//fetcher.broadcastTrains();
 		}
 
 		fetcher.startFetch();
