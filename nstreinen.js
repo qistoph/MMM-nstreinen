@@ -71,7 +71,7 @@ Module.register("nstreinen", {
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "DATA") {
 			if (this.identifier === payload.moduleId) {
-				console.log(notification, payload);
+				console.debug(notification, payload);
 				this.trains = payload.trains;
 				this.loaded = true;
 				this.error = null;
@@ -113,7 +113,7 @@ Module.register("nstreinen", {
 
 		for (var t in trains) {
 			var lineInfo = this.mapRow(trains[t]);
-			console.log("lineInfo:", lineInfo);
+			//console.debug("lineInfo:", lineInfo);
 			var trainWrapper = document.createElement("tr");
 			trainWrapper.className = "normal";
 
@@ -220,7 +220,7 @@ Module.register("nstreinen", {
 		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" "))).join(", ");
 		title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
 
-		console.log(trip.legs[0].stops[0]);
+		//console.debug("stops[0]:", trip.legs[0].stops[0]);
 
 		return {
 			symbol: "default",
