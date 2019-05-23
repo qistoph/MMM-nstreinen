@@ -13,6 +13,7 @@ Module.register("nstreinen", {
 		symbolMapping: {
 			"IC": "train",
 			"SPR": "stop-circle",
+			"ST": "stop-circle",
 			"Intercity": "train",
 			"Intercity direct": "forward",
 			"Sprinter": "stop-circle",
@@ -203,15 +204,18 @@ Module.register("nstreinen", {
 
 		var delay = Math.max(0, actualDateTime - plannedDateTime);
 
+		// TODO: test/check with actual data (missing in docs)
+		var warn = ("messages" in trip && trip.messages.some(m => m.style !== "INFO"));
+
 		return {
 			symbol: trip.trainCategory,
-			warn: false, // TODO based on trip.messages (that are not INFO?)
+			warn: warn,
 			title: trip.direction,
 			titleBright: Boolean(trip.destinationChanged),
 			timestamp: actualDateTime,
 			delay: delay,
-			track: trip.actualTrack,
-			trackBright: trip.actualTrack != trip.plannedTrack,
+			track: trip.actualTrack || trip.plannedTrack,
+			trackBright: trip.actualTrack && trip.actualTrack != trip.plannedTrack,
 			cancelled: trip.cancelled
 		};
 	},
@@ -220,18 +224,20 @@ Module.register("nstreinen", {
 		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" "))).join(", ");
 		title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
 
+		var delay = Math.max(0, trip.legs[0].stops[0].actualDepartureDateTime - trip.legs[0].stops[0].plannedDepartureDateTime);
+
 		//console.debug("stops[0]:", trip.legs[0].stops[0]);
 
 		return {
 			symbol: "default",
-			warn: trip.actualDurationInMinutes > trip.plannedDurationInMinutes,
+			warn: trip.status === "DISRUPTION",
 			title: title,
 			titleBright: false, // TODO
 			timestamp: moment(trip.legs[0].stops[0].plannedDepartureDateTime),
-			delay: 0, // TODO
+			delay: delay,
 			track: trip.legs[0].stops[0].plannedDepartureTrack,
 			trackBright: false, // TODO
-			cancelled: false, // TODO
+			cancelled: trip.status == "CANCELLED",
 		};
 	},
 

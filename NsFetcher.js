@@ -29,10 +29,10 @@ module.exports = class NsFetcher {
 
 	doFetch() {
 		if (this.config.mode == MODE_STATION) {
-			console.log("MODE_STATION");
+			//console.log("MODE_STATION");
 			this.fetchStation();
 		} else if (this.config.mode == MODE_TRIP) {
-			console.log("MODE_TRIP");
+			//console.log("MODE_TRIP");
 			this.fetchTrip();
 		} else {
 			console.log("nstreinen - NsFetcher invalid mode: " + this.config.mode);
@@ -42,7 +42,7 @@ module.exports = class NsFetcher {
 		var self = this;
 		clearTimeout(this.reloadTimer);
 		this.reloadTimer = setTimeout(function() {
-			console.log("NOW");
+			//console.log("NOW");
 			self.doFetch()
 		}, this.config.reloadInterval);
 	}
