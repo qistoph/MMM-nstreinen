@@ -50,7 +50,7 @@ Module.register("nstreinen", {
 				maxEntries: this.config.maxEntries
 			});
 		} else {
-			this.error = "Configure nstreinen V2 module with apiKey and fromStation";
+			this.error = "Configure nstreinen V2 module\nwith apiKey and fromStation";
 		}
 	},
 
