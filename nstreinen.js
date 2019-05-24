@@ -38,16 +38,20 @@ Module.register("nstreinen", {
 			this.mode = MODE_TRIP;
 		}
 
-		this.sendSocketNotification("ADD_CONFIG", {
-			moduleId: this.identifier,
-			apiKey: this.config.apiKey,
-			mode: this.mode,
-			fromStation: this.config.fromStation,
-			toStation: this.config.toStation,
-			reloadInterval: this.config.reloadInterval,
-			departureOffset: this.config.departureOffset,
-			maxEntries: this.config.maxEntries
-		});
+		if ("apiKey" in this.config && "fromStation" in this.config) {
+			this.sendSocketNotification("ADD_CONFIG", {
+				moduleId: this.identifier,
+				apiKey: this.config.apiKey,
+				mode: this.mode,
+				fromStation: this.config.fromStation,
+				toStation: this.config.toStation,
+				reloadInterval: this.config.reloadInterval,
+				departureOffset: this.config.departureOffset,
+				maxEntries: this.config.maxEntries
+			});
+		} else {
+			this.error = "Configure nstreinen V2 module with apiKey and fromStation";
+		}
 	},
 
 	suspend: function() {
