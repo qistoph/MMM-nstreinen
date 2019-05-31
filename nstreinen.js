@@ -225,7 +225,7 @@ Module.register("nstreinen", {
 	},
 
 	mapTripRow: function(trip) {
-		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" "))).join(", ");
+		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" ")) || "??").join(", ");
 		title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
 
 		var delay = Math.max(0, trip.legs[0].stops[0].actualDepartureDateTime - trip.legs[0].stops[0].plannedDepartureDateTime);
@@ -234,7 +234,7 @@ Module.register("nstreinen", {
 
 		return {
 			symbol: "default",
-			warn: trip.status === "DISRUPTION",
+			warn: trip.status === "DISRUPTION" || trip.status === "ALTERNATIVE_TRANSPORT",
 			title: title,
 			titleBright: false, // TODO
 			timestamp: moment(trip.legs[0].stops[0].plannedDepartureDateTime),
