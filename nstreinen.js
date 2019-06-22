@@ -225,10 +225,11 @@ Module.register("nstreinen", {
 	},
 
 	mapTripRow: function(trip) {
-		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" ")) || "??").join(", ");
-		title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
+                var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" ")) || "??").join(", ");
+                title = title.replace("ICD","Intercity Direct").replace(/SPR/g,"Sprinter").replace(/IC/g,"Intercity").replace("THA","Thalys");
+                title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
 
-		var delay = Math.max(0, trip.legs[0].stops[0].actualDepartureDateTime - trip.legs[0].stops[0].plannedDepartureDateTime);
+                var delay = Math.max(0,(new Date(trip.legs[0].stops[0].actualDepartureDateTime).getTime() - new Date(trip.legs[0].stops[0].plannedDepartureDateTime).getTime())/(1000*60)); 
 
 		//console.debug("stops[0]:", trip.legs[0].stops[0]);
 
