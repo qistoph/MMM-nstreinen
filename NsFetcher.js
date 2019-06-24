@@ -64,9 +64,13 @@ module.exports = class NsFetcher {
 	}
 
 	fetchTrip() {
+		var dateTime = new Date(new Date().getTime() + this.config.departureOffset * 1000).toISOString();
 		this.ns.getTrips({
 			fromStation: this.config.fromStation,
-			toStation: this.config.toStation
+			toStation: this.config.toStation,
+			previousAdvices: 0,
+			nextAdvices: this.config.maxEntries,
+			dateTime: dateTime
 		})
 			.then(data => this.callbackReceive(data.trips))
 			.catch(this.callbackError);
