@@ -21,6 +21,11 @@ Module.register("nstreinen", {
 			"Snelbus i.p.v. trein": "bus",
 			"default": "train"
 		},
+		legRenaming: {
+			"SPR": "Sprinter",
+			"IC": "Intercity",
+			"ICD": "Intercity Direct"
+		},
 		fade: true,
 		fadePoint: 0.25,
 	},
@@ -224,8 +229,16 @@ Module.register("nstreinen", {
 		};
 	},
 
+	legName: function(leg) {
+		var typeShort = leg.name.substr(0, leg.name.indexOf(" "));
+		if(typeShort in this.config.legRenaming) {
+			return this.config.legRenaming[typeShort];
+		}
+		return "??";
+	},
+
 	mapTripRow: function(trip) {
-		var title = trip.legs.map(leg => leg.name.substr(0, leg.name.indexOf(" ")) || "??").join(", ");
+		var title = trip.legs.map(leg => this.legName(leg)).join(", ");
 		title += " (" + this.minToHHMM(trip.actualDurationInMinutes) + ")";
 
 		var delay = Math.max(0, trip.legs[0].stops[0].actualDepartureDateTime - trip.legs[0].stops[0].plannedDepartureDateTime);
