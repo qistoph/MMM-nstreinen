@@ -13,7 +13,7 @@
   "author": "Chris van Marle",
   "license": "ISC",
   "dependencies": {
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "node-rest-client": "^3.1.0",
     "ns-api": "git+https://github.com/fvdm/nodejs-ns-api.git#v3"
   },
@@ -26,14 +26,14 @@
   },
   "devDependencies": {
     "grunt": "latest",
-    "grunt-eslint": "latest",
-    "grunt-jsonlint": "latest",
+    "grunt-eslint": "^21.1.0",
+    "grunt-jsonlint": "^2.0.0",
     "grunt-markdownlint": "^1.0.43",
     "grunt-staged": "^0.1.0",
-    "grunt-stylelint": "latest",
+    "grunt-stylelint": "^0.11.0",
     "pre-commit": "^1.2.1",
     "stylelint": "^9.10.1",
-    "stylelint-config-standard": "latest",
+    "stylelint-config-standard": "^18.3.0",
     "time-grunt": "latest"
   }
 }
