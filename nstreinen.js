@@ -14,6 +14,7 @@ Module.register("nstreinen", {
 			"IC": "train",
 			"SPR": "stop-circle",
 			"ST": "stop-circle",
+			"BUS": "bus",
 			"Intercity": "train",
 			"Intercity direct": "forward",
 			"Sprinter": "stop-circle",
@@ -214,7 +215,12 @@ Module.register("nstreinen", {
 		var delay = Math.max(0, actualDateTime - plannedDateTime);
 
 		// TODO: test/check with actual data (missing in docs)
-		var warn = ("messages" in trip && trip.messages.some(m => m.style !== "INFO"));
+		// We've seen:
+		// {
+		//   "message": "Bus in plaats van trein",
+		//   "style": "INFO"
+		// }
+		var warn = ("messages" in trip && trip.messages.length > 0);
 
 		return {
 			symbol: trip.trainCategory,
