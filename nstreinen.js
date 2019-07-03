@@ -236,7 +236,7 @@ Module.register("nstreinen", {
 	},
 
 	legName: function(leg) {
-		var typeShort = leg.name.substr(0, leg.name.indexOf(" "));
+		var typeShort = leg.product.categoryCode;
 		if(typeShort in this.config.legRenaming) {
 			return this.config.legRenaming[typeShort];
 		}
