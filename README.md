@@ -5,8 +5,6 @@
 This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Shows informantion on trains departuring a configurable Dutch trainstation.
 
-Please note: **V2 is still in test, feel free to use, but expect bugs**
-
 (old images, will be replaced for V2)
 ![Example Visualization](.previews/nstreinen.png)
 ![Example Visualization with destination](.previews/nstreinen-destination.png)
@@ -15,7 +13,7 @@ Please note: **V2 is still in test, feel free to use, but expect bugs**
 
 To install the module, just clone this repository to your __modules__ folder:
 
-- `git clone --single-branch -b v2 https://github.com/qistoph/MMM-nstreinen.git nstreinen`
+- `git clone https://github.com/qistoph/MMM-nstreinen.git nstreinen`
 - `cd nstreinen`
 - `npm install` to install the dependencies
 
