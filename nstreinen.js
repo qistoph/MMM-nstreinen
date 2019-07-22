@@ -25,7 +25,8 @@ Module.register("nstreinen", {
 		legRenaming: {
 			"SPR": "Sprinter",
 			"IC": "Intercity",
-			"ICD": "Intercity Direct"
+			"ICD": "Intercity Direct",
+			"NSS": "Snelbus"
 		},
 		fade: true,
 		fadePoint: 0.25,
