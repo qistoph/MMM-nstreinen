@@ -134,17 +134,17 @@ Module.register("nstreinen", {
 				symbolWrapper.className = "symbol";
 				var symbol = document.createElement("span");
 
-				var symbolName = lineInfo.symbol in this.config.symbolMapping ? this.config.symbolMapping[lineInfo.symbol] : this.config.symbolMapping["default"];
-
-				symbol.className = "fa fa-"+symbolName;
-				symbolWrapper.appendChild(symbol);
-
 				if(lineInfo.warn) {
 					var warn = document.createElement("span");
 					warn.className = "fa fa-exclamation-triangle";
 					symbolWrapper.appendChild(document.createTextNode("\u00A0"));
 					symbolWrapper.appendChild(warn);
 				}
+
+				var symbolName = lineInfo.symbol in this.config.symbolMapping ? this.config.symbolMapping[lineInfo.symbol] : this.config.symbolMapping["default"];
+
+				symbol.className = "fa fa-"+symbolName;
+				symbolWrapper.appendChild(symbol);
 
 				trainWrapper.appendChild(symbolWrapper);
 			}
