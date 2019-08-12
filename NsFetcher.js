@@ -57,7 +57,8 @@ module.exports = class NsFetcher {
 
 	fetchStation() {
 		this.ns.getDepartures({
-			station: this.config.fromStation
+			station: this.config.fromStation,
+			maxJourneys: this.config.maxEntries
 		})
 			.then(this.callbackReceive)
 			.catch(this.callbackError);
