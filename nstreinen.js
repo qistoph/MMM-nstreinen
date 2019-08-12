@@ -90,10 +90,13 @@ Module.register("nstreinen", {
 			}
 		} else if (notification === "FETCH_ERROR") {
 			if (this.identifier === payload.moduleId) {
-				Log.error("NSTreinen Error. Could not fetch api," + payload.error);
-				this.error = `Error (${payload.error.code}) fetching NS info`;
-				if ("errors" in payload.error) {
-					this.error += `: ${payload.error.errors[0].message}`;
+				if (payload.error.statusCode == 401) {
+					this.error = "Error fetching NS info: invalid API key";
+				} else {
+					this.error = `Error (${payload.error.code}) fetching NS info`;
+					if ("errors" in payload.error) {
+						this.error += `: ${payload.error.errors[0].message}`;
+					}
 				}
 			}
 		} else {
