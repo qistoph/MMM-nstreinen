@@ -30,7 +30,7 @@
     "grunt-jsonlint": "^2.0.0",
     "grunt-markdownlint": "^1.0.43",
     "grunt-staged": "^0.1.0",
-    "grunt-stylelint": "^0.11.0",
+    "grunt-stylelint": "^0.11.1",
     "pre-commit": "^1.2.1",
     "stylelint": "^9.10.1",
     "stylelint-config-standard": "^18.3.0",
