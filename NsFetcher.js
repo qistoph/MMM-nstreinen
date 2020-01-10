@@ -73,7 +73,7 @@ module.exports = class NsFetcher {
 			nextAdvices: this.config.maxEntries,
 			dateTime: dateTime
 		})
-			.then(data => this.callbackReceive(data.trips))
+			.then(data => this.callbackReceive(data))
 			.catch(this.callbackError);
 	}
 };

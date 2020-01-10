@@ -15,7 +15,7 @@
   "dependencies": {
     "eslint": "^5.16.0",
     "node-rest-client": "^3.1.0",
-    "ns-api": "git+https://github.com/fvdm/nodejs-ns-api.git#v3"
+    "ns-api": "git+https://github.com/fvdm/nodejs-ns-api.git"
   },
   "bugs": {
     "url": "https://github.com/qistoph/MMM-nstreinen/issues"
