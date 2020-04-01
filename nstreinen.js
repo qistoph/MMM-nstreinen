@@ -140,7 +140,6 @@ Module.register("nstreinen", {
 				if(lineInfo.warn) {
 					var warn = document.createElement("span");
 					warn.className = "fa fa-exclamation-triangle";
-					symbolWrapper.appendChild(document.createTextNode("\u00A0"));
 					symbolWrapper.appendChild(warn);
 				}
 

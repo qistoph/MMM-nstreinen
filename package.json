@@ -25,9 +25,9 @@
     "url": "https://github.com/qistoph/MMM-nstreinen"
   },
   "devDependencies": {
-    "grunt": "latest",
+    "grunt": "^1.1.0",
     "grunt-eslint": "^21.1.0",
-    "grunt-jsonlint": "^2.0.0",
+    "grunt-jsonlint": "^2.1.2",
     "grunt-markdownlint": "^1.0.43",
     "grunt-staged": "^0.1.0",
     "grunt-stylelint": "^0.11.1",
