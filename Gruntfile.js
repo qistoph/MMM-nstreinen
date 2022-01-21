@@ -5,7 +5,7 @@ module.exports = function(grunt) {
 		eslint: {
 			main: {
 				options: {
-					configFile: ".eslintrc.json",
+					overrideConfigFile: ".eslintrc.json",
 				},
 				src: ["*.js"]
 			}
@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 		stylelint: {
 			simple: {
 				options: {
-					configFile: ".stylelintrc"
+					overrideConfigFile: ".stylelintrc"
 				},
 				src: ["*.css"]
 			}
