@@ -20,13 +20,20 @@ Module.register("nstreinen", {
 			"Sprinter": "stop-circle",
 			"Stopbus i.p.v. trein": "bus",
 			"Snelbus i.p.v. trein": "bus",
-			"default": "train"
+			"default": "train",
+			"default-stop": "stop-circle"
 		},
 		legRenaming: {
 			"SPR": "Sprinter",
 			"IC": "Intercity",
+			"ICE": "ICE Internationaal",
 			"ICD": "Intercity Direct",
-			"NSS": "Snelbus"
+			"NJ": "Nightjet",
+			"NSS": "Snelbus",
+			"ST": "Stoptrein",
+			"S": "Sneltrein",
+			"THA": "Thalys",
+			"BUS": "Stopbus i.p.v. trein"
 		},
 		fade: true,
 		fadePoint: 0.25,
@@ -143,7 +150,7 @@ Module.register("nstreinen", {
 					symbolWrapper.appendChild(warn);
 				}
 
-				var symbolName = lineInfo.symbol in this.config.symbolMapping ? this.config.symbolMapping[lineInfo.symbol] : this.config.symbolMapping["default"];
+				var symbolName = this.getSymbolMapping(lineInfo.symbol);
 
 				symbol.className = "fa fa-"+symbolName;
 				symbolWrapper.appendChild(symbol);
@@ -238,11 +245,24 @@ Module.register("nstreinen", {
 		};
 	},
 
+	getSymbolMapping: function(symbol) {
+		if(symbol in this.config.symbolMapping) {
+			return this.config.symbolMapping[symbol];
+		}
+
+		if(symbol.match(/Stoptrein/)) {
+			return this.config.symbolMapping["default-stop"];
+		}
+
+		return this.config.symbolMapping["default"];
+	},
+
 	legName: function(leg) {
 		var typeShort = leg.product.categoryCode;
 		if(typeShort in this.config.legRenaming) {
 			return this.config.legRenaming[typeShort];
 		}
+		Log.error("Unknown leg code:", typeShort)
 		return "??";
 	},
 
