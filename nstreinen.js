@@ -33,7 +33,8 @@ Module.register("nstreinen", {
 			"ST": "Stoptrein",
 			"S": "Sneltrein",
 			"THA": "Thalys",
-			"BUS": "Stopbus i.p.v. trein"
+			"BUS": "Stopbus i.p.v. trein",
+			"BST": "Stopbus i.p.v. trein"
 		},
 		fade: true,
 		fadePoint: 0.25,
