@@ -16,7 +16,7 @@ module.exports = class NsFetcher {
 		this.config = config;
 		this.reloadTimer = null;
 
-		this.ns = new NSAPI({key: config.apiKey});
+		this.ns = new NSAPI({key: config.apiKey, timeout: 30*1000});
 	}
 
 	onReceive(callback) {
